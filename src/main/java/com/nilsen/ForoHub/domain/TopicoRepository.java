@@ -11,4 +11,6 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
     @Query("SELECT COUNT(t) > 0 FROM Topico t WHERE t.titulo = :titulo AND t.mensaje = :mensaje")
     boolean existeTopicoConTituloYMensaje(String titulo, String mensaje);
 
+
+    Topico findByid(Long id);
 }

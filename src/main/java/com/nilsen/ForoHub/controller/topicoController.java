@@ -36,4 +36,12 @@ public class topicoController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(body);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosDBTopico> MostrarUnicoTopidoId(@PathVariable Long id){
+
+        Topico topico = repository.findByid(id);
+        DatosDBTopico topicoMostrado = new DatosDBTopico(topico);
+        return ResponseEntity.ok(topicoMostrado);
+    }
 }
