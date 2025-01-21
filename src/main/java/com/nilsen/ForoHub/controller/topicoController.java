@@ -1,15 +1,16 @@
 package com.nilsen.ForoHub.controller;
 
-import com.nilsen.ForoHub.domain.DatosDBTopico;
-import com.nilsen.ForoHub.domain.DatosRegistroTopico;
-import com.nilsen.ForoHub.domain.Topico;
-import com.nilsen.ForoHub.domain.TopicoRepository;
+import com.nilsen.ForoHub.domain.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,12 +21,19 @@ public class topicoController {
     private TopicoRepository repository;
 
     @PostMapping
-    public void registrar(@RequestBody @Valid DatosRegistroTopico datos){
+    public ResponseEntity registrar(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder){
         if(!repository.existeTopicoConTituloYMensaje(datos.titulo(), datos.mensaje())){
-            repository.save(new Topico(datos));
-            System.out.println("Topico registrado");
+            Topico topico = new Topico(datos);
+            repository.save(topico);
+            DatosRespuestaTopico datosRT = new DatosRespuestaTopico(topico);
+            URI url = uriComponentsBuilder.path("/tópicos/{id}")
+                    .buildAndExpand(topico.getId())
+                    .toUri();
+
+            return ResponseEntity.created(url).body(datosRT);
         }else {
-            System.out.println("Topico repetido");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Tópico duplicado");
         }
     }
 
@@ -34,13 +42,18 @@ public class topicoController {
         var body = repository.findAll().stream()
                 .map(DatosDBTopico::new)
                 .collect(Collectors.toList());
+        if(body.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(body);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DatosDBTopico> MostrarUnicoTopidoId(@PathVariable Long id){
-
         Topico topico = repository.findByid(id);
+        if(topico == null){
+            return ResponseEntity.notFound().build();
+        }
         DatosDBTopico topicoMostrado = new DatosDBTopico(topico);
         return ResponseEntity.ok(topicoMostrado);
     }
