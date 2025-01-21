@@ -1,10 +1,12 @@
 package com.nilsen.ForoHub.controller;
 
 import com.nilsen.ForoHub.domain.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ClientHttpResponseDecorator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -57,4 +59,23 @@ public class topicoController {
         DatosDBTopico topicoMostrado = new DatosDBTopico(topico);
         return ResponseEntity.ok(topicoMostrado);
     }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity actualizarTopico(@RequestBody @Valid DatosTopicoActualizados datos, @PathVariable Long id){
+
+        if(!repository.existeTopicoConTituloYMensaje(datos.titulo(), datos.mensaje())){
+            Topico topico = repository.findByid(id);
+            if(topico == null){
+                return ResponseEntity.notFound().build();
+            }
+            topico.actualizar(datos);
+            return ResponseEntity.ok(new DatosDBTopico(topico));
+        }else{
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No es posible actualizar, debido a que ya exite otro tópico con el mismo título-mensaje");
+        }
+
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.nilsen.ForoHub.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,7 +45,27 @@ public class Topico {
     public Topico() {
     }
 
+    public void actualizar(@Valid DatosTopicoActualizados datos) {
+        if(datos.autor() != null){
+            this.autor = datos.autor();
+        }
 
+        if(datos.status() != null){
+            this.status = datos.status();
+        }
+
+        if(datos.mensaje() != null){
+            this.mensaje = datos.mensaje();
+        }
+
+        if(datos.curso() != null){
+            this.curso = datos.curso();
+        }
+
+        if(datos.titulo() != null){
+            this.titulo = datos.titulo();
+        }
+    }
 
     public String getTitulo() {
         return titulo;
@@ -73,4 +94,6 @@ public class Topico {
     public String getCurso() {
         return curso;
     }
+
+
 }
