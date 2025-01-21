@@ -74,7 +74,18 @@ public class topicoController {
         }else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No es posible actualizar, debido a que ya exite otro tópico con el mismo título-mensaje");
         }
+    }
 
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminarTopico(@PathVariable Long id){
+        Topico topico = repository.findByid(id);
+        if(topico != null){
+            repository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
 
     }
 

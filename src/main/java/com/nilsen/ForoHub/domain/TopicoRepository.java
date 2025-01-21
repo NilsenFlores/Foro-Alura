@@ -13,4 +13,7 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
 
     Topico findByid(Long id);
+
+    void deleteById(Long Id);
+
 }
