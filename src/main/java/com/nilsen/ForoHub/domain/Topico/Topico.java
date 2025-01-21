@@ -1,11 +1,8 @@
-package com.nilsen.ForoHub.domain;
+package com.nilsen.ForoHub.domain.Topico;
 
+import com.nilsen.ForoHub.domain.Status;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

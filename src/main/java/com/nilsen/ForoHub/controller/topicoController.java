@@ -1,12 +1,11 @@
 package com.nilsen.ForoHub.controller;
 
-import com.nilsen.ForoHub.domain.*;
+import com.nilsen.ForoHub.domain.Topico.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.reactive.ClientHttpResponseDecorator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
