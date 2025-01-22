@@ -1,16 +1,16 @@
 package com.nilsen.ForoHub.controller;
 
 import com.nilsen.ForoHub.domain.Usuarios.DatosAutenticarUsuario;
-import org.apache.catalina.User;
+import com.nilsen.ForoHub.domain.Usuarios.Usuario;
+import com.nilsen.ForoHub.infra.DatosJWT;
+import com.nilsen.ForoHub.infra.TokenService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
@@ -19,10 +19,14 @@ public class AutenticacionController {
     @Autowired
     private AuthenticationManager manager;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping
-    ResponseEntity autenticarUsuario(DatosAutenticarUsuario datos){
+    ResponseEntity autenticarUsuario(@RequestBody @Valid DatosAutenticarUsuario datos){
         Authentication token = new UsernamePasswordAuthenticationToken(datos.login(), datos.clave());
-        manager.authenticate(token);
-        return ResponseEntity.ok().build();
+        var usuarioAutenticado = manager.authenticate(token);
+        var tokenJWT = tokenService.generaToken((Usuario) usuarioAutenticado.getPrincipal());
+        return ResponseEntity.ok(new DatosJWT(tokenJWT));
     }
 }
